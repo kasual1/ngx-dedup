@@ -1,0 +1,6 @@
+<button (click)="onReloadSpecific()">Reload specific</button>
+
+<input type="checkbox" [id]="uniqueId" [name]="uniqueId"  [checked]="skipCache" [(ngModel)]="skipCache">
+<label for="uniqueId">Skip Cache</label><br>
+
+<pre>{{ people$ | async | json}}</pre>
