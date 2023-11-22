@@ -4,12 +4,25 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpResponse
+  HttpResponse,
+  HttpContextToken
 } from '@angular/common/http';
 import { Observable, asapScheduler, finalize, of, scheduled, shareReplay, tap } from 'rxjs';
 import { QueueService } from './queue.service';
 import { CacheService } from './cache.service';
 import { Router } from '@angular/router';
+import { ICacheItem } from './cache-item.model';
+import { IQueueItem } from './queue-item.model';
+
+export const dedupConfig = {
+  maxAge: 5000,
+  maxCacheCount: 10,
+  isCachable: (request: HttpRequest<any>) => {
+    return request.method === 'GET';
+  }
+};
+
+export const SKIP_CACHE = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class DedupInterceptor implements HttpInterceptor {
@@ -29,14 +42,18 @@ export class DedupInterceptor implements HttpInterceptor {
       this._currentUrl = this._router.url;
     }
 
-    const cachedObservable: Observable<HttpEvent<any>> | undefined = this._queueService.get(request);
-    if (cachedObservable) {
-      return cachedObservable;
+    if(!dedupConfig.isCachable(request) || request.context.get(SKIP_CACHE)) {
+      return next.handle(request);
     }
 
-    const cachedResponse: HttpResponse<any> | undefined = this._cacheService.get(request);
-    if (cachedResponse) {
-      return scheduled(of(cachedResponse.clone()), asapScheduler);
+    const queudItem: IQueueItem<any> | undefined = this._queueService.get(request);
+    if (queudItem && !queudItem.isExpired(dedupConfig.maxAge)) {
+      return queudItem.getHttpEvent$();
+    }
+
+    const cachedItem: ICacheItem<any> | undefined = this._cacheService.get(request);
+    if (cachedItem && !cachedItem.isExpired(dedupConfig.maxAge)) {
+      return scheduled(of(cachedItem.getResponse()), asapScheduler);
     }
 
     const shared = next.handle(request).pipe(

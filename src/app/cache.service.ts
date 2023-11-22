@@ -1,16 +1,17 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CacheItem, ICacheItem } from './cache-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class CacheService {
 
-    private readonly cache = new Map<string, Readonly<HttpResponse<any>>>();
+    private readonly cache = new Map<string, Readonly<ICacheItem<any>>>();
 
     constructor() { }
 
-    get<K, T>(req: HttpRequest<K>): Readonly<HttpResponse<T>> | undefined {
+    get<K, T>(req: HttpRequest<K>): Readonly<ICacheItem<T>> | undefined {
         const key: string = req.method + '@' + req.urlWithParams;
-        const cached: HttpResponse<T> | undefined = this.cache.get(key);
+        const cached: ICacheItem<T> | undefined = this.cache.get(key);
 
         if (!cached) {
             return undefined;
@@ -21,7 +22,8 @@ export class CacheService {
 
     add<K, T>(req: HttpRequest<K>, res: HttpResponse<T>): void {
         const key: string = req.method + '@' + req.urlWithParams;
-        this.cache.set(key, res);
+        const cacheItem = new CacheItem<T>(res, new Date());
+        this.cache.set(key, cacheItem);
     }
 
     delete<K>(req: HttpRequest<K>): boolean {
