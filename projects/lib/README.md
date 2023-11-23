@@ -1,24 +1,72 @@
-# Lib
+<br>
+<br>
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.0.
+<h3 align="center">ngx-dedup</h3>
 
-## Code scaffolding
+<p align="center">
+Http request deduplication for Angular
+</p>
 
-Run `ng generate component component-name --project lib` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project lib`.
-> Note: Don't forget to add `--project lib` or else it will be added to the default project in your `angular.json` file. 
+<p align="center"><a href="https://www.npmjs.com/package/ngx-dedup"><img src="https://img.shields.io/npm/v/ngx-dedup?color=2c7dd1&amp;label=" alt="NPM version"></a></p>
 
-## Build
+<br>
+<br>
 
-Run `ng build lib` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Introduction
 
-## Publishing
+Ngx-dedup is a library to deduplicate http requests in Angular.
 
-After building your library with `ng build lib`, go to the dist folder `cd dist/lib` and run `npm publish`.
+## Install
 
-## Running unit tests
+```
+npm i ngx-dedup
+```
 
-Run `ng test lib` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Usage
 
-## Further help
+1. Add `NgxDedupModule` to your imports in your app.module.ts. You can add configurations via `forRoot()`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```typescript
+import { NgxStarPortModule } from "ngx-star-port";
+
+@NgModule({
+  declarations: [],
+  imports: [
+    NgxDedupModule.forRoot({
+      maxAge: 5000,
+      maxCacheCount: 100,
+      isCachable: (request) => {
+        return request.method === "GET";
+      },
+    }),
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+2. Add the `DedupInterceptor` in the providers array of your app.module.ts.
+
+```typescript
+import { NgxStarPortModule } from "ngx-star-port";
+
+@NgModule({
+  declarations: [],
+  imports: [
+    NgxDedupModule.forRoot({
+      maxAge: 5000,
+      maxCacheCount: 100,
+      isCachable: (request) => {
+        return request.method === "GET";
+      },
+    }),
+  ],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: DedupInterceptor,
+    multi: true
+  }],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
