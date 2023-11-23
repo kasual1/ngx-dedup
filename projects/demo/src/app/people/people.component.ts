@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { StarWarsService } from '../starwars.service';
 import { FormsModule } from '@angular/forms';
 

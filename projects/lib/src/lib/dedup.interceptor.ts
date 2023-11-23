@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -13,19 +13,14 @@ import { CacheService } from './cache.service';
 import { Router } from '@angular/router';
 import { ICacheItem } from './cache-item.model';
 import { IQueueItem } from './queue-item.model';
-
-export const dedupConfig = {
-  maxAge: 5000,
-  maxCacheCount: 10,
-  isCachable: (request: HttpRequest<any>) => {
-    return request.method === 'GET';
-  }
-};
+import { DEDUP_CONFIG_TOKEN, DedupConfig } from './ngx-dedup.module';
 
 export const SKIP_CACHE = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class DedupInterceptor implements HttpInterceptor {
+
+  private config: DedupConfig;
 
   private _currentUrl: string = '';
 
@@ -33,7 +28,9 @@ export class DedupInterceptor implements HttpInterceptor {
     private _queueService: QueueService,
     private _cacheService: CacheService,
     private _router: Router
-  ) { }
+  ) {
+    this.config = inject(DEDUP_CONFIG_TOKEN);
+  }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if(this._router.url != this._currentUrl) {
@@ -42,17 +39,17 @@ export class DedupInterceptor implements HttpInterceptor {
       this._currentUrl = this._router.url;
     }
 
-    if(!dedupConfig.isCachable(request) || request.context.get(SKIP_CACHE)) {
+    if(!this.config.isCachable(request) || request.context.get(SKIP_CACHE)) {
       return next.handle(request);
     }
 
     const queudItem: IQueueItem<any> | undefined = this._queueService.get(request);
-    if (queudItem && !queudItem.isExpired(dedupConfig.maxAge)) {
+    if (queudItem && !queudItem.isExpired(this.config.maxAge)) {
       return queudItem.getHttpEvent$();
     }
 
     const cachedItem: ICacheItem<any> | undefined = this._cacheService.get(request);
-    if (cachedItem && !cachedItem.isExpired(dedupConfig.maxAge)) {
+    if (cachedItem && !cachedItem.isExpired(this.config.maxAge)) {
       return scheduled(of(cachedItem.getResponse()), asapScheduler);
     }
 
