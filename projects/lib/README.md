@@ -1,6 +1,3 @@
-<br>
-<br>
-
 <h3 align="center">ngx-dedup</h3>
 
 <p align="center">
@@ -40,6 +37,11 @@ import { NgxStarPortModule } from "ngx-star-port";
       },
     }),
   ],
+   providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: DedupInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
