@@ -24,7 +24,7 @@ npm i ngx-dedup
 
 ## Usage
 
-1. Add `NgxDedupModule` to your imports in your app.module.ts. You can add configurations via `forRoot()`.
+To use ngx-dedup, add the `NgxDedupModule` to your imports in your app.module.ts. and include the `DedupInterceptor` in the providers array. You can pass a configuration object via `forRoot()`.
 
 ```typescript
 import { NgxStarPortModule } from "ngx-star-port";
@@ -40,32 +40,6 @@ import { NgxStarPortModule } from "ngx-star-port";
       },
     }),
   ],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
-```
-
-2. Add the `DedupInterceptor` in the providers array of your app.module.ts.
-
-```typescript
-import { NgxStarPortModule } from "ngx-star-port";
-
-@NgModule({
-  declarations: [],
-  imports: [
-    NgxDedupModule.forRoot({
-      maxAge: 5000,
-      maxCacheCount: 100,
-      isCachable: (request) => {
-        return request.method === "GET";
-      },
-    }),
-  ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: DedupInterceptor,
-    multi: true
-  }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
