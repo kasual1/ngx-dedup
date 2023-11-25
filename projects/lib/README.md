@@ -1,7 +1,3 @@
-<p align="center">
-<img height="200" src="https://github.com/kasual1/ngx-star-port/blob/a41804396aca203f28b43df935a64080e790e42b/projects/demo/src/assets/ngx-star-port-logo.png" alt="Ngx Starport">
-</p>
-
 <h1 align="center">ngx-dedup</h1>
 
 <p align="center">
@@ -15,6 +11,11 @@ Request deduplication for your Angular application
 Many components in an Angular app need to use the same data.
 With `ngx-dedup` you do not have to fetch data globally, nor forward it via input properties. Instead you can fetch data within your components without worrying about the performance implications of making multiple requests for the same data.
 `ngx-dedup` intercepts all requests and automatically deduplicates requests based on the URL and options.
+
+<p align="center">
+<img height="350" src="https://github.com/kasual1/ngx-star-port/blob/main/ngx-dedup-infographic.png" alt="Ngx Starport">
+</p>
+
 
 ## Install
 
