@@ -60,14 +60,35 @@ You can pass a configuration object via `forRoot()`. Please see the list below f
 | isCachable | `request.method === 'GET'` |  By default all GET requests are cachable. Use custom logic to overwrite this behavior   |
 
 ## Skip the cache for certain requests
-If you want certain requests to skip the cache (e.g. to force a refresh of your data), you can set the `SKIP_CACHE` token of the `HttpContext` to true
+If you want certain requests to skip the cache (e.g. to force a refresh of your data), you can set the `NGX_DEDUP_SKIP_CACHE` token of the `HttpContext` to true
 ```typescript
 
-const context = new HttpContext().set(SKIP_CACHE, true);
+const context = new HttpContext().set(NGX_DEDUP_SKIP_CACHE, true);
 this.http.get('https://swapi.dev/api/people/1', { context });
 
 ```
 
 ## Remove certain requests from cache
+To remove specific requests from cache, inject the `NgxDedupService` in your constructor and call the `removeFromCache()` method. Pass the requests URL + queryParams as the key.
+```typescript
+
+constructor(private _ngxDedupService: NgxDedupService) { }
+
+someMethod(): void {
+  this._ngxDedupService.removeFromCache('https://swapi.dev/api/people/1');
+}
+
+```
 
 ## Remove all requests from cache
+To remove all requests from cache, inject the `NgxDedupService` in your constructor and call the `clearCache()` method.
+```typescript
+
+constructor(private _ngxDedupService: NgxDedupService) { }
+
+someMethod(): void {
+  this._ngxDedupService.clearCache();
+}
+
+```
+
