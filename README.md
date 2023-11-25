@@ -77,6 +77,6 @@ this.http.get('https://swapi.dev/api/people/1', { context });
 
 ```
 
-## Clear the cache for certain requests
+## Remove certain requests from cache
 
-## Clear the entire cache
+## Remove all requests from cache
