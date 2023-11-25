@@ -1,6 +1,6 @@
 {
   "name": "ngx-dedup",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "keywords": [
     "http-caching",
     "caching",
