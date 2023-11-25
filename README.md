@@ -16,7 +16,7 @@ With `ngx-dedup` you do not have to fetch data globally, nor forward it via inpu
 <img height="350" src="https://github.com/kasual1/ngx-star-port/blob/main/ngx-dedup-infographic.png" alt="Ngx Starport">
 </p>
 
-## How is this different from a cahing library?
+## How is this different from a caching library?
 With the default configurations `ngx-dedup` only caches requests based on the current active route path. This way your data stays up to date during navigation but different components never cause a duplicated request.
 
 ## Install
