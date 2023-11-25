@@ -33,9 +33,7 @@ To use ngx-dedup, add the `NgxDedupModule` to your imports in your app.module.ts
 import { NgxDedupModule } from "ngx-dedup";
 
 @NgModule({
-  declarations: [],
   imports: [
-    // 1.) Add NgxDedupModule + configuration to your imports
     NgxDedupModule.forRoot({
       maxAge: 5000,
       maxCacheCount: 100,
@@ -44,12 +42,6 @@ import { NgxDedupModule } from "ngx-dedup";
       },
     }),
   ],
-   providers: [{
-    // 2.) Add the DedupInterceptor to your providers array
-    provide: HTTP_INTERCEPTORS,
-    useClass: DedupInterceptor,
-    multi: true
-  }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
