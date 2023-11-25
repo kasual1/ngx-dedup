@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { ICacheItem } from './cache-item.model';
 import { IQueueItem } from './queue-item.model';
 import { NGX_DEDUP_CONFIG as NGX_DEDUP_CONFIG, NGX_DEDUP_SKIP_CACHE, NgxDedupConfig } from './ngx-dedup.module';
+import { LoggingService } from './logging.service';
 
 
 @Injectable()
@@ -25,6 +26,7 @@ export class NgxDedupInterceptor implements HttpInterceptor {
   constructor(
     private _queueService: QueueService,
     private _cacheService: CacheService,
+    private _loggingService: LoggingService,
     private _router: Router
   ) {
     this.config = inject(NGX_DEDUP_CONFIG);
@@ -34,33 +36,26 @@ export class NgxDedupInterceptor implements HttpInterceptor {
     if(this.config.isRouteBased && this._router.url != this._currentUrl) {
     
       this._currentUrl = this._router.url;
+      this._loggingService.log(`Route changed to: ${this._router.url}.`);
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Route changed to: ${this._router.url}.`);
-      }
+      this._cacheService.clear();
+      this._loggingService.log(`Clear cache.`);
 
       this._queueService.clear();
-      this._cacheService.clear();
+      this._loggingService.log(`Clear queue.`);
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Clear cache.`);
-      }
     }
 
     if(!this.config.isCachable(request)) {
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Request is not cachable: ${request.method + '@' + request.urlWithParams}.`);
-      }
+      this._loggingService.log(`Request is not cachable: ${request.method + '@' + request.urlWithParams}.`);
 
       return next.handle(request);
     }
 
     if(request.context.get(NGX_DEDUP_SKIP_CACHE)){
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Request skipped cache: ${request.method + '@' + request.urlWithParams}.`);
-      }
+      this._loggingService.log(`Request skipped cache: ${request.method + '@' + request.urlWithParams}.`);
 
       return next.handle(request);
     }
@@ -68,9 +63,7 @@ export class NgxDedupInterceptor implements HttpInterceptor {
     const queudItem: IQueueItem<any> | undefined = this._queueService.get(request);
     if (queudItem && !queudItem.isExpired(this.config.maxAge)) {
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Get request from queue: ${request.method + '@' + request.urlWithParams}.`);
-      }
+      this._loggingService.log(`Get request from queue: ${request.method + '@' + request.urlWithParams}.`);
 
       return queudItem.getHttpEvent$();
     }
@@ -78,9 +71,7 @@ export class NgxDedupInterceptor implements HttpInterceptor {
     const cachedItem: ICacheItem<any> | undefined = this._cacheService.get(request);
     if (cachedItem && !cachedItem.isExpired(this.config.maxAge)) {
 
-      if(this.config.isLoggingEnabled) {
-        console.info(`Get request from cache: ${request.method + '@' + request.urlWithParams}.`);
-      }
+      this._loggingService.log(`Get request from cache: ${request.method + '@' + request.urlWithParams}.`);
 
       return scheduled(of(cachedItem.getResponse()), asapScheduler);
     }
@@ -91,27 +82,21 @@ export class NgxDedupInterceptor implements HttpInterceptor {
 
           this._cacheService.add(request, event.clone());
 
-          if(this.config.isLoggingEnabled) {
-            console.info(`Added request to cache: ${request.method + '@' + request.urlWithParams}.`);
-          }
+          this._loggingService.log(`Added request to cache: ${request.method + '@' + request.urlWithParams}.`);
         }
       }),
       finalize(() => {
 
         this._queueService.delete(request.urlWithParams);
 
-        if(this.config.isLoggingEnabled) {
-          console.info(`Deleted request from queue: ${request.method + '@' + request.urlWithParams}.`);
-        }
+        this._loggingService.log(`Deleted request from queue: ${request.method + '@' + request.urlWithParams}.`);
       }),
       shareReplay()
     );
 
     this._queueService.add(request, shared);
 
-    if(this.config.isLoggingEnabled) {
-      console.info(`Added request to queue: ${request.method + '@' + request.urlWithParams}.`);
-    }
+    this._loggingService.log(`Added request to queue: ${request.method + '@' + request.urlWithParams}.`);
 
     return shared;
   }
