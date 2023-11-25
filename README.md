@@ -51,6 +51,13 @@ You can pass a configuration object via `forRoot()`. Please see the list below f
       isCachable: (request: HttpRequest<any>) => request.method === 'GET'
  }),
 ```
+| Property |  Default Value  |  Description   |
+| :--------:   | :-------------: | :------------: |
+| isRouteBased |       true      |  If set to `true` requests are only deduplicated on the current active route path   |
+| isLoggingEnabled |       false      |  If set to `true` all interactions within NgxDebug are logged to the console  |
+| maxAge |       undefined      |  Sets the maximum caching age in milliseconds. By default requests have no maxAge.   |
+| maxCacheSize |      100      |  Limits the number of cachable items   |
+| isCachable | `request.method === 'GET'` |  By default all GET requests are cachable. Use custom logic to overwrite this behavior   |
 
 ## Skip the cache for certain requests
 If you want certain requests to skip the cache (e.g. to force a refresh of your data), you can set the `SKIP_CACHE` token of the `HttpContext` to true
