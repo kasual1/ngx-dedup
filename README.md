@@ -34,7 +34,7 @@ import { NgxDedupModule } from "ngx-dedup";
 
 @NgModule({
   imports: [
-    NgxDedupModule
+    NgxDedupModule //Add to your imports
   ],
   bootstrap: [AppComponent],
 })
