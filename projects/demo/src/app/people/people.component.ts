@@ -17,10 +17,6 @@ export class PeopleComponent implements OnInit{
 
   skipCache = false;
 
-  get uniqueId(): string {
-    return Math.random().toString(36).substr(2, 9);
-  }
-
   constructor(private starWarsService: StarWarsService) {}
 
   ngOnInit(): void {

@@ -17,5 +17,4 @@ export class HomeComponent {
   onReloadAll(): void {
     this.peopleComponents.forEach(c => c.load());
   }
-
 }

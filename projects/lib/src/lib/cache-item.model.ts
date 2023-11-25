@@ -5,7 +5,7 @@ export interface ICacheItem<T> {
   getAdded(): Date;
   setResponse(response: HttpResponse<T>): void;
   setAdded(added: Date): void;
-  isExpired(maxAge: number): boolean;
+  isExpired(maxAge: number | undefined): boolean;
 }
 
 export class CacheItem<T> implements ICacheItem<T> {
@@ -30,7 +30,10 @@ export class CacheItem<T> implements ICacheItem<T> {
     this._added = added;
   }
 
-  public isExpired(maxAge: number): boolean {
+  public isExpired(maxAge: number | undefined): boolean {
+    if(!maxAge) {
+      return false;
+    }
     return (Date.now() - this._added.getTime()) > maxAge;
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgxDedupService } from 'lib';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'demo';
+
+  constructor(private _ngxDedupService: NgxDedupService) { }
+
+  onClearCache(): void {
+    this._ngxDedupService.clearCache();
+  }
 }

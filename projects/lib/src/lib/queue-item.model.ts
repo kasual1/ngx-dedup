@@ -6,7 +6,7 @@ export interface IQueueItem<T> {
   getAdded(): Date;
   setHttpEvent(response: Observable<HttpEvent<T>>): void;
   setAdded(added: Date): void;
-  isExpired(maxAge: number): boolean;
+  isExpired(maxAge: number | undefined): boolean;
 }
 
 export class QueueItem<T> implements IQueueItem<T> {
@@ -31,7 +31,10 @@ export class QueueItem<T> implements IQueueItem<T> {
     this._added = added;
   }
 
-  public isExpired(maxAge: number): boolean {
+  public isExpired(maxAge: number | undefined): boolean {
+    if(!maxAge) {
+      return false;
+    }
     return (Date.now() - this._added.getTime()) > maxAge;
   }
 }

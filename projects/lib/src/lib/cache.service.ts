@@ -9,8 +9,12 @@ export class CacheService {
 
     constructor() { }
 
+    private buildKey<K>(req: HttpRequest<K>): string {
+        return req.urlWithParams;
+    }
+
     get<K, T>(req: HttpRequest<K>): Readonly<ICacheItem<T>> | undefined {
-        const key: string = req.method + '@' + req.urlWithParams;
+        const key: string = this.buildKey(req);
         const cached: ICacheItem<T> | undefined = this.cache.get(key);
 
         if (!cached) {
@@ -21,13 +25,12 @@ export class CacheService {
     }
 
     add<K, T>(req: HttpRequest<K>, res: HttpResponse<T>): void {
-        const key: string = req.method + '@' + req.urlWithParams;
+        const key: string = this.buildKey(req);
         const cacheItem = new CacheItem<T>(res, new Date());
         this.cache.set(key, cacheItem);
     }
 
-    delete<K>(req: HttpRequest<K>): boolean {
-        const key: string = req.method + '@' + req.urlWithParams;
+    delete<K>(key: string): boolean {
         return this.cache.delete(key);
     }
 

@@ -1,7 +1,7 @@
-<h3 align="center">ngx-dedup</h3>
+<h1 align="center">ngx-dedup</h1>
 
 <p align="center">
-Http request deduplication for Angular
+    Route based http cache for Angular
 </p>
 
 <p align="center"><a href="https://www.npmjs.com/package/ngx-dedup"><img src="https://img.shields.io/npm/v/ngx-dedup?color=2c7dd1&amp;label=" alt="NPM version"></a></p>
@@ -11,13 +11,15 @@ Http request deduplication for Angular
 
 ## Introduction
 
-Ngx-dedup is a library to deduplicate http requests in Angular.
+Route based http cache for Angular
 
 ## Install
 
 ```
 npm i ngx-dedup
 ```
+
+###
 
 ## Usage
 
@@ -29,6 +31,7 @@ import { NgxStarPortModule } from "ngx-star-port";
 @NgModule({
   declarations: [],
   imports: [
+    // 1.) Add NgxDedupModule + configuration to your imports
     NgxDedupModule.forRoot({
       maxAge: 5000,
       maxCacheCount: 100,
@@ -37,11 +40,14 @@ import { NgxStarPortModule } from "ngx-star-port";
       },
     }),
   ],
-   providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: DedupInterceptor,
-    multi: true
-  }],
+  providers: [
+    {
+      // 2.) Add the DedupInterceptor to your providers array
+      provide: HTTP_INTERCEPTORS,
+      useClass: DedupInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
