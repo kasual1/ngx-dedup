@@ -17,7 +17,7 @@ With `ngx-dedup` you do not have to fetch data globally, nor forward it via inpu
 </p>
 
 ## How is this different from a cahing library?
-With the default configurations `ngx-dedup` only caches requests based on the current active route path. Only duplicated requests of the current page are deduplicated. This way your data stays up to date during navigation but no requests are send twice, even though they come from two different components on the page.
+With the default configurations `ngx-dedup` only caches requests based on the current active route path. Only duplicated requests of the current page are deduplicated. This way your data stays up to date during navigation but different components never cause a duplicated request.
 
 ## Install
 
