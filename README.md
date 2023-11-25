@@ -69,11 +69,10 @@ You can pass a configuration object via `forRoot()`. Please see the list below f
 ```
 
 ## Skip cache for certain requests
-If you want to skip the cache (e.g. to force a refresh of your data), you can set the `SKIP_CACHE` token of the `HttpContext` to true
+If you want certain requests to skip the cache (e.g. to force a refresh of your data), you can set the `SKIP_CACHE` token of the `HttpContext` to true
 ```typescript
-  getPeople$(id: number, skipCache: boolean = false): Observable<any> {
-        return this.http.get(`https://swapi.dev/api/people/${id}`, {
-          context: new HttpContext().set(SKIP_CACHE, skipCache)
-        });
-    }
+
+const context = new HttpContext().set(SKIP_CACHE, true);
+this.http.get('https://swapi.dev/api/people/1', { context });
+
 ```
