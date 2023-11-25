@@ -34,13 +34,7 @@ import { NgxDedupModule } from "ngx-dedup";
 
 @NgModule({
   imports: [
-    NgxDedupModule.forRoot({
-      maxAge: 5000,
-      maxCacheCount: 100,
-      isCachable: (request) => {
-        return request.method === "GET";
-      },
-    }),
+    NgxDedupModule
   ],
   bootstrap: [AppComponent],
 })
