@@ -68,7 +68,7 @@ You can pass a configuration object via `forRoot()`. Please see the list below f
  }),
 ```
 
-## Skip cache for certain requests
+## Skip the cache for certain requests
 If you want certain requests to skip the cache (e.g. to force a refresh of your data), you can set the `SKIP_CACHE` token of the `HttpContext` to true
 ```typescript
 
@@ -76,3 +76,7 @@ const context = new HttpContext().set(SKIP_CACHE, true);
 this.http.get('https://swapi.dev/api/people/1', { context });
 
 ```
+
+## Clear the cache for certain requests
+
+## Clear the entire cache
