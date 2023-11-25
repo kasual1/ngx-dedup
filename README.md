@@ -1,27 +1,55 @@
-# NgxDedup
+<h1 align="center">ngx-dedup</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.5.
+<p align="center">
+Request deduplication for your Angular application
+</p>
 
-## Development server
+<p align="center"><a href="https://www.npmjs.com/package/ngx-dedup"><img src="https://img.shields.io/npm/v/ngx-dedup?color=2c7dd1&amp;label=" alt="NPM version"></a></p>
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Introduction
+Many components in an Angular app need to use the same data.
+With `ngx-dedup` you do not have to fetch data globally, nor forward it via input properties. Instead you can fetch data within your components without worrying about the performance implications of making multiple requests for the same data.
+`ngx-dedup` intercepts all requests and automatically deduplicates requests based on the URL and options.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+<p align="center">
+<img height="350" src="https://github.com/kasual1/ngx-star-port/blob/main/ngx-dedup-infographic.png" alt="Ngx Starport">
+</p>
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Install
 
-## Running unit tests
+```
+npm i ngx-dedup
+```
+### 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Usage
 
-## Running end-to-end tests
+To use ngx-dedup, add the `NgxDedupModule` to your imports in your app.module.ts. and include the `DedupInterceptor` in the providers array. You can pass a configuration object via `forRoot()`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```typescript
+import { NgxDedupModule } from "ngx-dedup";
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+@NgModule({
+  declarations: [],
+  imports: [
+    // 1.) Add NgxDedupModule + configuration to your imports
+    NgxDedupModule.forRoot({
+      maxAge: 5000,
+      maxCacheCount: 100,
+      isCachable: (request) => {
+        return request.method === "GET";
+      },
+    }),
+  ],
+   providers: [{
+    // 2.) Add the DedupInterceptor to your providers array
+    provide: HTTP_INTERCEPTORS,
+    useClass: DedupInterceptor,
+    multi: true
+  }],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
