@@ -1,3 +1,7 @@
+<p align="center">
+<img height="200" src="https://github.com/kasual1/ngx-star-port/blob/a41804396aca203f28b43df935a64080e790e42b/projects/demo/src/assets/ngx-star-port-logo.png" alt="Ngx Starport">
+</p>
+
 <h1 align="center">ngx-dedup</h1>
 
 <p align="center">
@@ -24,7 +28,7 @@ npm i ngx-dedup
 To use ngx-dedup, add the `NgxDedupModule` to your imports in your app.module.ts. and include the `DedupInterceptor` in the providers array. You can pass a configuration object via `forRoot()`.
 
 ```typescript
-import { NgxStarPortModule } from "ngx-star-port";
+import { NgxDedupModule } from "ngx-dedup";
 
 @NgModule({
   declarations: [],
