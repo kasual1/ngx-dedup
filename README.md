@@ -44,11 +44,11 @@ With this minimal setup all GET request are deduplicated.
 You can pass a configuration object via `forRoot()`. Please see the list below for all config options.
 ```typescript
  NgxDedupModule.forRoot({
-      maxAge: 5000,
-      maxCacheCount: 100,
-      isCachable: (request) => {
-        return request.method === "GET";
-      },
+      isRouteBased: true,
+      isLoggingEnabled: false,
+      maxAge: 10000,
+      maxChacheSize: 100,
+      isCachable: (request: HttpRequest<any>) => request.method === 'GET'
  }),
 ```
 
