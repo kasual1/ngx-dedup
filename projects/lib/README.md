@@ -33,7 +33,7 @@ To use ngx-dedup, add the `NgxDedupModule` to your imports in your app.module.ts
 import { NgxDedupModule } from "ngx-dedup";
 
 @NgModule({
-  imports: [NgxDedupModule], //Add to your imports
+  imports: [NgxDedupModule.forRoot()], //Add to your imports
   bootstrap: [AppComponent],
 })
 export class AppModule {}
