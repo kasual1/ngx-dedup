@@ -1,4 +1,4 @@
-import { HttpEvent, HttpResponse } from "@angular/common/http";
+import { HttpEvent } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 export interface IQueueItem<T> {
